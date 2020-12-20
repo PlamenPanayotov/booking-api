@@ -3,14 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Booking;
-use DateTime;
+use App\Service\BookingServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
+
 class BookingController extends AbstractController
 {
+    private $bookingService;
+
+    public function __construct(BookingServiceInterface $bookingService)
+    {
+        $this->bookingService = $bookingService;
+    }
     /**
      * @Route("/api/booking", name="booking", methods="post")
      */
@@ -18,15 +25,13 @@ class BookingController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         $booking = new Booking();
-        $booking->setUuid($data["uuid"])
-        ->setOrderedStartTime(new DateTime($data['orderedStartTime']))
-        ->setOrderedEndTime(new DateTime($data['orderedEndTime']))
-        ->setRecordedStartTime(new DateTime($data['recrodedStartTime']))  
-        ->setRecorderEndTime(new DateTime($data['recordedEndTime']))
-        ->setCanceled($data['canceled']);          
+
+        $this->bookingService->setBooking($booking, $data);    
+
         $em = $this->getDoctrine()->getManager();
         $em->persist($booking);
         $em->flush();
+
         return $this->json([
             'message' => $data
         ]);
