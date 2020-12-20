@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -20,38 +21,48 @@ abstract class User implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    protected $id;
+    private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    protected $email;
+    private $email;
 
     /**
      * @ORM\Column(type="json")
      */
-    protected $roles = [];
+    private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    protected $password;
+    private $password;
 
     /**
      * @ORM\Column(type="string", length=180)
      */
-    protected $firstName;
+    private $firstName;
 
     /**
      * @ORM\Column(type="string", length=180)
      */
-    protected $lastName;
+    private $lastName;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    protected $birthDate;
+    private $birthDate;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Booking", mappedBy="user", cascade={"persist"})
+     */
+    private $bookings;
+
+    public function __construct() 
+    {
+        $this->booking = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -129,5 +140,97 @@ abstract class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+    
+
+    /**
+     * Get the value of firstName
+     */ 
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Set the value of firstName
+     *
+     * @return  self
+     */ 
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of lastName
+     */ 
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * Set the value of lastName
+     *
+     * @return  self
+     */ 
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of birthDate
+     */ 
+    public function getBirthDate()
+    {
+        return $this->birthDate;
+    }
+
+    /**
+     * Set the value of birthDate
+     *
+     * @return  self
+     */ 
+    public function setBirthDate($birthDate)
+    {
+        $this->birthDate = $birthDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Booking[]
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $bookings): self
+    {
+        if (!$this->bookings->contains($bookings)) {
+            $this->bookings[] = $bookings;
+            $bookings->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $bookings): self
+    {
+        if ($this->bookings->contains($bookings)) {
+            $this->bookings->removeElement($bookings);
+            // set the owning side to null (unless already changed)
+            if ($bookings->getProduct() === $this) {
+                $bookings->setProduct(null);
+            }
+        }
+
+        return $this;
     }
 }

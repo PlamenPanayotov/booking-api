@@ -19,7 +19,7 @@ class BookingController extends AbstractController
         $this->bookingService = $bookingService;
     }
     /**
-     * @Route("/api/booking", name="booking", methods="post")
+     * @Route("/api/add_booking", name="booking", methods="post")
      */
     public function index(Request $request): Response
     {
