@@ -5,22 +5,12 @@ namespace App\Entity;
 use App\Repository\RetailerRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity(repositoryClass=RetailerRepository::class)
  */
 class Retailer extends User
 {
-
-    public function __construct($email, $firstName, $lastName, $birthDate)
-    {
-        parent::__construct($email, $firstName, $lastName, $birthDate);
-    }
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -32,10 +22,6 @@ class Retailer extends User
      */
     private $dealernumber;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getDealername(): ?string
     {
