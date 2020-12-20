@@ -4,19 +4,14 @@ namespace App\Service;
 
 use App\Entity\Booking;
 use DateTime;
-use Symfony\Component\Security\Core\Security;
+
 
 class BookingService implements BookingServiceInterface
 {
-    private $security;
 
-    public function __construct(Security $security)
+    public function setBooking(Booking $booking, $data, $user)
     {
-        $this->security = $security;
-    }
-    public function setBooking(Booking $booking, $data)
-    {
-        $user = $this->security->getUser();
+       
         $booking->setUuid($data["uuid"])
                 ->setOrderedStartTime(new DateTime($data['orderedStartTime']))
                 ->setOrderedEndTime(new DateTime($data['orderedEndTime']))
